@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat</title>
+  <style>
+    body { font-family: sans-serif; }
+    #messages { list-style: none; padding: 0; }
+    #messages li { margin-bottom: 5px; }
+  </style>
+</head>
+<body>
+  <ul id="messages"></ul>
+  <input id="input" autocomplete="off" /><button id="send">Send</button>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const input = document.getElementById('input');
+    const sendBtn = document.getElementById('send');
+    const messages = document.getElementById('messages');
+
+    sendBtn.onclick = () => {
+      if(input.value) {
+        socket.emit('chat message', input.value);
+        input.value = '';
+      }
+    };
+
+    socket.on('chat message', (msg) => {
+      const li = document.createElement('li');
+      li.textContent = `[${msg.timestamp}] ${msg.user}: ${msg.text}`;
+      messages.appendChild(li);
+    });
+
+    // Optional: handle login/register events here if you want
+  </script>
+</body>
+</html>
